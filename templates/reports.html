@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Reports | StockWise{% endblock %}
+{% block heading %}Reports{% endblock %}
+{% block content %}
+<section class="panel">
+  <div class="section-head"><div><h2>Sales report</h2><p>Choose a date range to review sales.</p></div></div>
+  <form method="get" class="search-form"><label>From <input type="date" name="start" value="{{ start }}" required></label><label>To <input type="date" name="end" value="{{ end }}" required></label><button class="button primary">Apply filter</button></form>
+  <div class="stats-grid report-stats"><article class="stat-card indigo"><div class="stat-top">Revenue</div><strong>₹{{ "%.2f"|format(summary.revenue) }}</strong></article><article class="stat-card teal"><div class="stat-top">Units sold</div><strong>{{ summary.units_sold }}</strong></article><article class="stat-card violet"><div class="stat-top">Transactions</div><strong>{{ summary.transactions }}</strong></article></div>
+  <div class="table-wrap"><table><thead><tr><th>Date</th><th>Product</th><th>SKU</th><th>Quantity</th><th>Unit price</th><th>Total</th></tr></thead><tbody>{% for s in sales %}<tr><td>{{ s.sale_date }}</td><td>{{ s.product_name }}</td><td>{{ s.sku }}</td><td>{{ s.quantity }}</td><td>₹{{ "%.2f"|format(s.unit_price) }}</td><td>₹{{ "%.2f"|format(s.total_amount) }}</td></tr>{% else %}<tr><td colspan="6" class="empty">No sales in this date range.</td></tr>{% endfor %}</tbody></table></div>
+</section>
+<section class="panel"><div class="section-head"><div><h2>Current stock report</h2><p>Quantity and estimated inventory values.</p></div></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>SKU</th><th>Category</th><th>Quantity</th><th>Reorder level</th><th>Cost value</th><th>Retail value</th></tr></thead><tbody>{% for p in stock_rows %}<tr><td>{{ p.name }}</td><td>{{ p.sku }}</td><td>{{ p.category }}</td><td>{{ p.quantity }}</td><td>{{ p.reorder_level }}</td><td>₹{{ "%.2f"|format(p.cost_value) }}</td><td>₹{{ "%.2f"|format(p.retail_value) }}</td></tr>{% else %}<tr><td colspan="7" class="empty">No products available.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

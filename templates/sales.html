@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Sales | StockWise{% endblock %}
+{% block heading %}Record a Sale{% endblock %}
+{% block content %}
+<section class="panel form-panel">
+<p class="muted intro">Select a product and quantity. Stock is checked and reduced automatically.</p>
+<form method="post" class="form-grid single">
+  <label>Product<select name="product_id" required><option value="">Choose a product</option>{% for p in products %}<option value="{{ p.id }}">{{ p.name }} ({{ p.sku }}) — {{ p.quantity }} available — ₹{{ "%.2f"|format(p.selling_price) }}</option>{% endfor %}</select></label>
+  <label>Quantity sold<input type="number" name="quantity" min="1" required placeholder="Enter quantity"></label>
+  <div class="form-actions"><button class="button primary">Save Sale</button></div>
+</form>
+</section>
+<section class="panel"><div class="section-head"><div><h2>Sales history</h2><p>Latest 100 transactions</p></div></div><div class="table-wrap"><table><thead><tr><th>Product</th><th>SKU</th><th>Quantity</th><th>Unit price</th><th>Total</th><th>Date</th></tr></thead><tbody>{% for s in sales %}<tr><td>{{ s.product_name }}</td><td>{{ s.sku }}</td><td>{{ s.quantity }}</td><td>₹{{ "%.2f"|format(s.unit_price) }}</td><td>₹{{ "%.2f"|format(s.total_amount) }}</td><td>{{ s.sale_date }}</td></tr>{% else %}<tr><td colspan="6" class="empty">No sales recorded.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | StockWise{% endblock %}
+{% block heading %}Dashboard{% endblock %}
+{% block content %}
+<section class="stats-grid">
+  <article class="stat-card indigo"><div class="stat-top">Products <span>▣</span></div><strong>{{ stats.product_count }}</strong><small>Products in catalogue</small></article>
+  <article class="stat-card teal"><div class="stat-top">Units in stock <span>▤</span></div><strong>{{ stats.units_in_stock }}</strong><small>Available inventory units</small></article>
+  <article class="stat-card violet"><div class="stat-top">Stock cost value <span>₹</span></div><strong>₹{{ "%.2f"|format(stats.stock_value) }}</strong><small>Based on purchase price</small></article>
+  <article class="stat-card orange"><div class="stat-top">This month's sales <span>↗</span></div><strong>₹{{ "%.2f"|format(month_sales.amount) }}</strong><small>{{ month_sales.units }} units sold this month</small></article>
+</section>
+{% if low_stock %}
+<section class="panel warning-panel">
+  <div class="section-head"><div><h2>⚠ Low stock alerts</h2><p>These products are at or below their reorder level.</p></div><a href="{{ url_for('products') }}">View products →</a></div>
+  <div class="alert-list">{% for p in low_stock %}<div class="low-item"><div><b>{{ p.name }}</b><small>{{ p.sku }} · Reorder at {{ p.reorder_level }}</small></div><span class="stock-pill">{{ p.quantity }} left</span></div>{% endfor %}</div>
+</section>
+{% else %}
+<section class="panel success-panel"><b>✓ Stock levels look good</b><p>No products are currently at or below their reorder level.</p></section>
+{% endif %}
+<section class="chart-grid">
+  <div class="panel"><div class="section-head"><div><h2>Sales revenue</h2><p>Monthly revenue for the last six months</p></div></div><canvas id="salesChart"></canvas></div>
+  <div class="panel"><div class="section-head"><div><h2>Stock by category</h2><p>Current units grouped by category</p></div></div><canvas id="categoryChart"></canvas></div>
+</section>
+<section class="panel">
+  <div class="section-head"><div><h2>Recent sales</h2><p>Latest recorded transactions</p></div><a href="{{ url_for('sales') }}">All sales →</a></div>
+  <div class="table-wrap"><table><thead><tr><th>Product</th><th>SKU</th><th>Quantity</th><th>Total</th><th>Date</th></tr></thead><tbody>
+  {% for s in recent_sales %}<tr><td>{{ s.product_name }}</td><td>{{ s.sku }}</td><td>{{ s.quantity }}</td><td>₹{{ "%.2f"|format(s.total_amount) }}</td><td>{{ s.sale_date }}</td></tr>{% else %}<tr><td colspan="5" class="empty">No sales recorded yet.</td></tr>{% endfor %}
+  </tbody></table></div>
+</section>
+<script>
+const monthLabels = {{ month_rows | map(attribute='month') | list | tojson }};
+const monthValues = {{ month_rows | map(attribute='revenue') | list | tojson }};
+const categoryLabels = {{ category_rows | map(attribute='category') | list | tojson }};
+const categoryValues = {{ category_rows | map(attribute='units') | list | tojson }};
+new Chart(document.getElementById('salesChart'), {type:'bar',data:{labels:monthLabels,datasets:[{label:'Revenue (₹)',data:monthValues,backgroundColor:'#625cf5',borderRadius:8}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+new Chart(document.getElementById('categoryChart'), {type:'doughnut',data:{labels:categoryLabels,datasets:[{data:categoryValues,backgroundColor:['#625cf5','#13b8a6','#f59e0b','#ec4899','#38bdf8','#8b5cf6']}]},options:{responsive:true,plugins:{legend:{position:'bottom'}}}});
+</script>
+{% endblock %}

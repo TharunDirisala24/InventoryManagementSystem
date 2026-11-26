@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}StockWise{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('dashboard') }}">Stock<span>Wise</span></a>
+    <div class="nav-label">WORKSPACE</div>
+    <a href="{{ url_for('dashboard') }}">▦ &nbsp; Dashboard</a>
+    <a href="{{ url_for('products') }}">▣ &nbsp; Products</a>
+    <a href="{{ url_for('stock_in') }}">＋ &nbsp; Stock In</a>
+    <a href="{{ url_for('sales') }}">↗ &nbsp; Record Sale</a>
+    <a href="{{ url_for('reports') }}">▤ &nbsp; Reports</a>
+    <div class="sidebar-note">Inventory Management<br><small>Flask · MySQL · Chart.js</small></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <div><div class="eyebrow">INVENTORY MANAGEMENT</div><h1>{% block heading %}Dashboard{% endblock %}</h1></div>
+      <a class="button primary" href="{{ url_for('add_product') }}">＋ Add Product</a>
+    </header>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+    <footer>StockWise · Inventory Management System</footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Stock In | StockWise{% endblock %}
+{% block heading %}Add Stock{% endblock %}
+{% block content %}
+<section class="panel form-panel">
+<p class="muted intro">Record newly received inventory. The product quantity will increase automatically.</p>
+<form method="post" class="form-grid single">
+  <label>Select product<select name="product_id" required><option value="">Choose a product</option>{% for p in products %}<option value="{{ p.id }}">{{ p.name }} ({{ p.sku }}) — Current: {{ p.quantity }}</option>{% endfor %}</select></label>
+  <label>Quantity received<input type="number" name="quantity" min="1" required placeholder="Enter quantity"></label>
+  <label>Note (optional)<input name="note" maxlength="255" placeholder="e.g. Supplier delivery"></label>
+  <div class="form-actions"><button class="button primary">Add Stock</button><a class="button ghost" href="{{ url_for('products') }}">Cancel</a></div>
+</form>
+</section>
+{% endblock %}

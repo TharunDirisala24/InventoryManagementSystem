@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} | StockWise{% endblock %}
+{% block heading %}{{ page_title }}{% endblock %}
+{% block content %}
+<section class="panel form-panel">
+<form method="post" class="form-grid">
+  <label>Product name<input name="name" required maxlength="120" value="{{ product.name if product else '' }}" placeholder="e.g. Wireless Mouse"></label>
+  <label>SKU / Product code<input name="sku" required maxlength="50" value="{{ product.sku if product else '' }}" placeholder="e.g. ACC-001"></label>
+  <label>Category<input name="category" required maxlength="80" value="{{ product.category if product else '' }}" placeholder="e.g. Accessories"></label>
+  <label>Purchase price (₹)<input type="number" name="purchase_price" min="0" step="0.01" required value="{{ product.purchase_price if product else '0.00' }}"></label>
+  <label>Selling price (₹)<input type="number" name="selling_price" min="0" step="0.01" required value="{{ product.selling_price if product else '0.00' }}"></label>
+  {% if product %}
+  <label>Current quantity<input value="{{ product.quantity }}" disabled><small>Use Stock In to increase stock or Record Sale to decrease it.</small></label>
+  {% else %}
+  <label>Opening quantity<input type="number" name="quantity" min="0" required value="0"></label>
+  {% endif %}
+  <label>Low-stock alert level<input type="number" name="reorder_level" min="0" required value="{{ product.reorder_level if product else 5 }}"></label>
+  <div class="form-actions"><button class="button primary" type="submit">Save Product</button><a class="button ghost" href="{{ url_for('products') }}">Cancel</a></div>
+</form>
+</section>
+{% endblock %}
